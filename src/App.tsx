@@ -4,7 +4,7 @@ import { PdfList } from './components/PdfList';
 import { buildDownloadFileName, getPageCount, mergePdfs } from './lib/mergePdfs';
 import type { AddFilesError, PdfEntry } from './types';
 
-const MIN_FILES = 3;
+const MIN_FILES = 2;
 
 export default function App() {
   const [entries, setEntries] = useState<PdfEntry[]>([]);
@@ -191,7 +191,7 @@ export default function App() {
           </section>
         ) : (
           <p className="rounded-lg bg-white/60 px-4 py-6 text-center text-sm text-slate-500">
-            まだPDFが追加されていません。3件以上のPDFを追加すると結合できます。
+            まだPDFが追加されていません。2件以上のPDFを追加すると結合できます。
           </p>
         )}
 
