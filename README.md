@@ -1,60 +1,55 @@
 # pdf-merge
 
-複数のPDFをブラウザ内で結合するWebアプリ。すべての処理がブラウザ内で完結するため、ファイルはサーバーに送信されません。
+複数のPDFをブラウザだけで結合できる、シンプルなWebアプリです。
 
-**公開URL**: `https://<username>.github.io/pdf-merge/`
+**🔗 今すぐ使う: https://jayemdot.github.io/pdf-merge/**
 
-## 機能
+## 特長
 
-- 2つ以上のPDFを結合（上限なし）
-- ファイル選択 + ドラッグ&ドロップの両対応
-- アップロード後にドラッグで並び替え可能（キーボード操作にも対応）
-- 壊れたPDFや非PDFファイルは自動でスキップ＆エラー表示
-- フロントエンド完結（PDFはサーバーに送信しない）
+- **サーバーに送信しません** — PDFはブラウザのメモリ上でのみ処理されるため、機密文書でも安心して扱えます
+- **ログイン・登録不要** — ページを開いてすぐに使えます
+- **並び替え対応** — アップロード後にドラッグ&ドロップでページ順を自由に変更
+- **ファイル数無制限** — 2つからいくつでも結合可能（ブラウザのメモリ上限まで）
+- **日本語UI**
+
+## 使い方
+
+1. [https://jayemdot.github.io/pdf-merge/](https://jayemdot.github.io/pdf-merge/) を開く
+2. PDFをドラッグ&ドロップするか、クリックしてファイルを選択
+3. 必要ならドラッグして順番を入れ替える
+4. **結合してダウンロード** を押すと `merged-YYYYMMDD-HHmmss.pdf` が保存されます
+
+> **ℹ️ 合計サイズが大きい場合**
+> 合計500MBを超えるとブラウザの動作が重くなったり、タブがクラッシュすることがあります（処理はすべてメモリ上で行うため）。大きなファイルを扱う際はPCのスペックに余裕を持たせてください。
 
 ## 技術スタック
 
-- Vite + React 19 + TypeScript
-- Tailwind CSS v4（`@tailwindcss/vite`）
-- [pdf-lib](https://pdf-lib.js.org/) — PDF結合
+- [Vite](https://vite.dev/) + [React 19](https://react.dev/) + TypeScript
+- [Tailwind CSS v4](https://tailwindcss.com/)
+- [pdf-lib](https://pdf-lib.js.org/) — クライアントサイドPDF操作
 - [@dnd-kit](https://dndkit.com/) — ドラッグ&ドロップ並び替え
+- GitHub Pages + GitHub Actions で自動デプロイ
 
 ## ローカル開発
 
 ```bash
+git clone https://github.com/jayemdot/pdf-merge.git
+cd pdf-merge
 npm install
-npm run dev    # 開発サーバー起動
-npm run build  # プロダクションビルド
-npm run preview # ビルド成果物をローカル確認
+npm run dev
 ```
 
-## GitHub Pages デプロイ
+| コマンド | 説明 |
+|---|---|
+| `npm run dev` | 開発サーバーを起動（デフォルト: http://localhost:5173/pdf-merge/） |
+| `npm run build` | プロダクションビルド（`dist/` に出力） |
+| `npm run preview` | ビルド成果物をローカルで確認 |
+| `npm run lint` | ESLint を実行 |
 
-`main` ブランチへの push で GitHub Actions が自動デプロイします。
+## デプロイ
 
-### 初回セットアップ手順
+`main` ブランチへの push で [GitHub Actions](https://github.com/jayemdot/pdf-merge/actions) が自動的に GitHub Pages にデプロイします。
 
-1. GitHub で `pdf-merge` リポジトリを作成（public 推奨）
-2. このプロジェクトを push
-   ```bash
-   git init
-   git add .
-   git commit -m "initial commit"
-   git branch -M main
-   git remote add origin git@github.com:<username>/pdf-merge.git
-   git push -u origin main
-   ```
-3. リポジトリの **Settings → Pages → Source** を **GitHub Actions** に設定
-4. Actions タブでワークフローの完了を待つ
-5. `https://<username>.github.io/pdf-merge/` で公開を確認
+## フィードバック
 
-### 別のリポジトリ名で公開する場合
-
-`vite.config.ts` の `base` をリポジトリ名に合わせて書き換えてください。
-
-```ts
-export default defineConfig({
-  base: '/<your-repo-name>/',
-  ...
-});
-```
+バグ報告や機能提案は [Issues](https://github.com/jayemdot/pdf-merge/issues) までお願いします。
