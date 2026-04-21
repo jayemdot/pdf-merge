@@ -1,10 +1,12 @@
 import { useState } from 'react';
 import { DropZone } from './components/DropZone';
 import { PdfList } from './components/PdfList';
+import { formatBytes } from './lib/formatBytes';
 import { buildDownloadFileName, getPageCount, mergePdfs } from './lib/mergePdfs';
 import type { AddFilesError, PdfEntry } from './types';
 
 const MIN_FILES = 2;
+const SIZE_WARN_THRESHOLD = 500 * 1024 * 1024;
 
 export default function App() {
   const [entries, setEntries] = useState<PdfEntry[]>([]);
@@ -107,9 +109,11 @@ export default function App() {
 
   const canMerge = entries.length >= MIN_FILES && !isMerging;
   const remaining = Math.max(0, MIN_FILES - entries.length);
+  const totalSize = entries.reduce((sum, e) => sum + e.file.size, 0);
+  const showSizeWarning = totalSize >= SIZE_WARN_THRESHOLD;
 
   return (
-    <div className="min-h-full bg-gradient-to-b from-slate-50 to-slate-100 px-4 py-10">
+    <div className="min-h-full bg-linear-to-b from-slate-50 to-slate-100 px-4 py-10">
       <div className="mx-auto flex max-w-2xl flex-col gap-6">
         <header className="text-center">
           <h1 className="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
@@ -165,11 +169,12 @@ export default function App() {
                 {remaining > 0 ? (
                   <>
                     あと<span className="mx-1 font-semibold text-slate-900">{remaining}</span>件必要です（現在
-                    <span className="mx-1 font-semibold text-slate-900">{entries.length}</span>件）
+                    <span className="mx-1 font-semibold text-slate-900">{entries.length}</span>件 ・ {formatBytes(totalSize)}）
                   </>
                 ) : (
                   <>
                     <span className="font-semibold text-slate-900">{entries.length}</span>件
+                    ・<span className="mx-1 font-semibold text-slate-900">{formatBytes(totalSize)}</span>
                     ・ドラッグで並び替えできます
                   </>
                 )}
@@ -182,6 +187,31 @@ export default function App() {
                 すべてクリア
               </button>
             </div>
+
+            {showSizeWarning && (
+              <div
+                role="alert"
+                className="flex items-start gap-2 rounded-lg border border-amber-300 bg-amber-50 px-3 py-2 text-sm text-amber-900"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="mt-0.5 h-4 w-4 shrink-0"
+                >
+                  <path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z" />
+                  <line x1="12" x2="12" y1="9" y2="13" />
+                  <line x1="12" x2="12.01" y1="17" y2="17" />
+                </svg>
+                <p>
+                  合計サイズが{formatBytes(totalSize)}と大きいため、結合時にブラウザが重くなる・タブがクラッシュする可能性があります。
+                </p>
+              </div>
+            )}
 
             <PdfList
               entries={entries}
